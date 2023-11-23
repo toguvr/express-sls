@@ -1,0 +1,24 @@
+org: toguvr
+app: express-similarity
+service: express-similarity
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+  - serverless-apigw-binary
+
+custom:
+  apigwBinary:
+    types:           #list of mime-types
+      - 'image/jpeg'
+      - 'text/html'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
