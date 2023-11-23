@@ -12,6 +12,7 @@ custom:
     types:           #list of mime-types
       - 'image/jpeg'
       - 'text/html'
+      - '*/*'
 
 provider:
   name: aws

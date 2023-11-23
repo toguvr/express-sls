@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-
+const canvas = require('canvas');
+const faceapi = require('@vladmandic/face-api');
 const tmpFolder = path.resolve(__dirname, '.', 'tmp');
 
 const upload = multer({
