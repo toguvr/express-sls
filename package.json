@@ -3,16 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "canvas": "^2.11.0",
     "@tensorflow/tfjs-node": "^4.2.0",
     "@vladmandic/face-api": "^1.7.9",
     "body-parser": "^1.20.2",
+    "canvas": "^2.11.0",
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "serverless-http": "^3.1.1"
   },
   "devDependencies": {
-    "serverless-apigw-binary": "^0.4.4",
     "serverless-offline": "^13.3.0"
   }
 }

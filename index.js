@@ -1,4 +1,3 @@
-require('dotenv/config');
 require('@tensorflow/tfjs-node');
 const serverless = require('serverless-http');
 const express = require('express');
@@ -34,9 +33,13 @@ app.get('/', (req, res, next) => {
 
 app.post('/', upload.single('image'), async (req, res, next) => {
   try {
+    // const MODEL_URL = 'https://togu.s3.sa-east-1.amazonaws.com/weights';
     const MODEL_URL = './model';
+    console.log('passei', 0);
+
     const { Canvas, Image, ImageData } = canvas;
     faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
+    console.log('passei', 1);
 
     await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODEL_URL);
     await faceapi.nets.faceRecognitionNet.loadFromDisk(MODEL_URL);
@@ -45,7 +48,7 @@ app.post('/', upload.single('image'), async (req, res, next) => {
     if (!isFaceDetectionModelLoaded) {
       throw new Error('Não carregou');
     }
-
+    console.log('passei', 2);
     // export const faceDetectionNet = tinyFaceDetector
 
     // SsdMobilenetv1Options
@@ -57,6 +60,7 @@ app.post('/', upload.single('image'), async (req, res, next) => {
       return new faceapi.SsdMobilenetv1Options({ minConfidence });
     }
 
+    console.log('passei', 3);
     const faceDetectionOptions = getFaceDetectorOptions();
     const compareUrl = req?.body?.compareUrl;
     const avatarFilename = req?.file?.filename;
@@ -66,6 +70,7 @@ app.post('/', upload.single('image'), async (req, res, next) => {
 
     const queryImage = await canvas.loadImage(originalPath);
 
+    console.log('passei', 4);
     const resultsRef = await faceapi.detectAllFaces(
       referenceImage,
       faceDetectionOptions
@@ -78,12 +83,14 @@ app.post('/', upload.single('image'), async (req, res, next) => {
     const faceImages1 = await faceapi.extractFaces(referenceImage, resultsRef);
     const faceImages2 = await faceapi.extractFaces(queryImage, resultsQuery);
 
+    console.log('passei', 5);
     let distance = 1;
 
     if (faceImages1.length > 0 && faceImages2.length > 0) {
       const fim1 = await faceapi.computeFaceDescriptor(faceImages1[0]);
       const fim2 = await faceapi.computeFaceDescriptor(faceImages2[0]);
 
+      console.log('passei', 6);
       distance = faceapi.utils.round(faceapi.euclideanDistance(fim1, fim2));
     } else {
       throw new Error('Sem rosto');
@@ -92,6 +99,7 @@ app.post('/', upload.single('image'), async (req, res, next) => {
 
     return res.json({ distance, samePerson: distance < 0.5 });
   } catch (err) {
+    console.log(err);
     const avatarFilename = req?.file?.filename;
     if (avatarFilename) {
       const originalPath = path.resolve(tmpFolder, avatarFilename);
@@ -112,6 +120,7 @@ app.use((req, res, next) => {
 // github:Automattic/node-canvas#198080580a0e3938c48daae357b88a1638a9ddcd
 // npm install canvas@github:Automattic/node-canvas#198080580a0e3938c48daae357b88a1638a9ddcd
 app.use((error, req, res, next) => {
+  console.log(error);
   res.status(error.status || 500).send({
     error: {
       status: error.status || 500,

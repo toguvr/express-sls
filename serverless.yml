@@ -5,21 +5,19 @@ frameworkVersion: '3'
 
 plugins:
   - serverless-offline
-  - serverless-apigw-binary
 
-custom:
-  apigwBinary:
-    types:           #list of mime-types
-      - 'image/jpeg'
-      - 'text/html'
-      - '*/*'
+
 
 provider:
   name: aws
   runtime: nodejs18.x
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
 
 functions:
   api:
     handler: index.handler
+    timeout: 10
     events:
       - httpApi: '*'
